@@ -1,7 +1,7 @@
 # reqres — Pruebas de API
 
 Pruebas funcionales sobre [https://reqres.in/api/](https://reqres.in/api/) con Serenity BDD,
-Screenplay y Cucumber. La suite se ejecuta contra la API real: no hay mocks, stubs ni WireMock.
+Screenplay y Cucumber.
 
 ## Stack
 
@@ -42,13 +42,12 @@ Gradle solo imprime los tests que fallan. Para ver cada caso ejecutado:
 ./gradlew clean test         # borra los resultados y vuelve a ejecutar
 ```
 
-Requiere JDK 17 y conexión a internet, porque las peticiones van al servicio real.
+Requiere JDK 17 y conexión a internet.
 
 La demo anónima de reqres.in impone **40 peticiones al día** por IP para clientes anónimos, además
 de una ventana de 20 peticiones por minuto (`ratelimit-policy: 20;w=60`). Una ejecución de la suite
 hace 8 peticiones, así que tras varias ejecuciones seguidas la API responde
-`429 rate_limit_exceeded` hasta el reinicio diario (00:00 UTC). Para volver a ejecutarla antes,
-usa una clave propia o espera al reinicio.
+`429 rate_limit_exceeded` hasta el reinicio diario.
 
 ## Estructura
 
