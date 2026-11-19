@@ -19,9 +19,18 @@ Automatización del login en https://www.saucedemo.com/ como smoke test.
 Desde esta carpeta:
 
 ```bash
-./gradlew test
-./gradlew aggregate
+./gradlew clean test aggregate
 ```
 
-`test` ejecuta la suite y `aggregate` genera el reporte HTML de Serenity en
-`target/site/serenity/index.html`.
+- `test` ejecuta la suite. Si nada cambió desde la última corrida, Gradle la marca
+  `UP-TO-DATE` y no vuelve a ejecutarla.
+- `aggregate` genera el reporte HTML de Serenity en `target/site/serenity/index.html`.
+  No lo dispara `test`, por eso van juntos.
+
+Gradle solo imprime los tests que fallan. Para ver cada caso ejecutado:
+
+```bash
+./gradlew test -i            # logging INFO con el detalle de cada test
+./gradlew test --rerun-tasks # fuerza la ejecución aunque esté al día
+./gradlew clean test         # borra los resultados y vuelve a ejecutar
+```
