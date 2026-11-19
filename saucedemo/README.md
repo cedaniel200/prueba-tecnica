@@ -1,7 +1,7 @@
 # SauceDemo — Smoke test de inicio de sesión
 
 Automatización del login en [https://www.saucedemo.com/](https://www.saucedemo.com/) como smoke
-test. La suite se ejecuta contra el sitio real: no hay mocks ni stubs.
+test.
 
 ## Stack
 
@@ -39,7 +39,7 @@ Gradle solo imprime los tests que fallan. Para ver cada caso ejecutado:
 ./gradlew clean test         # borra los resultados y vuelve a ejecutar
 ```
 
-Requiere JDK 17 y conexión a internet, porque las peticiones van al sitio real.
+Requiere JDK 17 y conexión a internet.
 
 ## Estructura
 
