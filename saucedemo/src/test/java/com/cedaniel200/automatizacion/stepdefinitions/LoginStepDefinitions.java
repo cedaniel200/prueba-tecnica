@@ -39,7 +39,7 @@ public class LoginStepDefinitions {
     @When("inicia sesión con {string} y {string}")
     public void iniciaSesionCon(String username, String password) {
         theActorInTheSpotlight().attemptsTo(
-                Login.with(new User(username, password))
+                Login.with(User.withCredentials(username, password))
         );
     }
 
