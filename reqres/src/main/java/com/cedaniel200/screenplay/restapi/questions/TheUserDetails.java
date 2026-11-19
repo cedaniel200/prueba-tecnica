@@ -10,10 +10,6 @@ import java.util.Map;
 
 import static net.serenitybdd.rest.SerenityRest.lastResponse;
 
-/**
- * Contrato de un usuario leído con {@code GET /users/{id}}: la respuesta envuelve el objeto en
- * {@code data} y los datos identificativos usan {@code first_name}/{@code last_name}.
- */
 @Subject("the user has id, email, first name, last name and avatar")
 public class TheUserDetails implements Question<Boolean> {
 
