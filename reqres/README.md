@@ -9,22 +9,6 @@ Screenplay y Cucumber. La suite se ejecuta contra la API real: no hay mocks, stu
 - Serenity BDD 5.4.1 con `serenity-screenplay` y `serenity-screenplay-rest`.
 - Cucumber 8.0.4 sobre JUnit Platform 6.1.3.
 
-## Cómo se ejecuta
-
-```sh
-./gradlew test
-./gradlew aggregate
-```
-
-Requiere JDK 17 y conexión a internet, porque las peticiones van al servicio real. El informe de
-Serenity queda en `target/site/serenity/index.html`.
-
-La demo anónima de reqres.in impone **40 peticiones al día** por IP para clientes anónimos, además
-de una ventana de 20 peticiones por minuto (`ratelimit-policy: 20;w=60`). Una ejecución de la suite
-hace 8 peticiones, así que tras varias ejecuciones seguidas la API responde
-`429 rate_limit_exceeded` hasta el reinicio diario (00:00 UTC). Para volver a ejecutarla antes,
-usa una clave propia o espera al reinicio.
-
 ## Escenarios
 
 | # | Escenario | Qué comprueba |
@@ -36,6 +20,52 @@ usa una clave propia o espera al reinicio.
 | 5 | Consultar la segunda página de usuarios | `GET /users?page=2` responde 200, trae 6 usuarios y el primero tiene id 7 |
 | 6 | Iniciar sesión con credenciales válidas | `POST /login` responde 200 e incluye un `token` no vacío |
 | 7 | Iniciar sesión sin contraseña | `POST /login` sin `password` responde 400 con `error: "Missing password"` |
+
+## Ejecución
+
+Desde esta carpeta:
+
+```bash
+./gradlew clean test aggregate
+```
+
+- `test` ejecuta la suite. Si nada cambió desde la última corrida, Gradle la marca
+  `UP-TO-DATE` y no vuelve a ejecutarla.
+- `aggregate` genera el reporte HTML de Serenity en `target/site/serenity/index.html`.
+  No lo dispara `test`, por eso van juntos.
+
+Gradle solo imprime los tests que fallan. Para ver cada caso ejecutado:
+
+```bash
+./gradlew test -i            # logging INFO con el detalle de cada test
+./gradlew test --rerun-tasks # fuerza la ejecución aunque esté al día
+./gradlew clean test         # borra los resultados y vuelve a ejecutar
+```
+
+Requiere JDK 17 y conexión a internet, porque las peticiones van al servicio real.
+
+La demo anónima de reqres.in impone **40 peticiones al día** por IP para clientes anónimos, además
+de una ventana de 20 peticiones por minuto (`ratelimit-policy: 20;w=60`). Una ejecución de la suite
+hace 8 peticiones, así que tras varias ejecuciones seguidas la API responde
+`429 rate_limit_exceeded` hasta el reinicio diario (00:00 UTC). Para volver a ejecutarla antes,
+usa una clave propia o espera al reinicio.
+
+## Estructura
+
+```text
+src/main/java/com/cedaniel200/screenplay/restapi
+├── tasks/        # CreateUser, ConsultTheUsers, ConsultUserDetails, ConsultTheUserJustCreated, Login
+├── questions/    # contrato de las respuestas y valores esperados
+├── models/       # User y su builder
+└── utils/        # RestService (rutas), ApiConfig (URL base) y Builder
+
+src/test
+├── java/.../runners/ApiTestSuite.java
+├── java/.../stepdefinitions/rest/
+└── resources/
+    ├── features/reqres.feature
+    └── serenity.conf
+```
 
 ## Configuración
 
@@ -64,21 +94,4 @@ ejecución con:
 
 ```sh
 ./gradlew test -Dcucumber.filter.tags="not @limitacion"
-```
-
-## Estructura
-
-```text
-src/main/java/com/cedaniel200/screenplay/restapi
-├── tasks/        # CreateUser, ConsultTheUsers, ConsultUserDetails, Login
-├── questions/    # contrato de las respuestas y valores esperados
-├── models/       # User y su builder
-└── utils/        # RestService (rutas), ApiConfig (URL base) y Builder
-
-src/test
-├── java/.../runners/ApiTestSuite.java
-├── java/.../stepdefinitions/rest/
-└── resources/
-    ├── features/reqres.feature
-    └── serenity.conf
 ```
